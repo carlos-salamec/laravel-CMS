@@ -19,7 +19,7 @@ Edit Category
             </ul>
           </div>
         @endif
-        <form action="/categories/{{$category->id}}/update" method="post">
+        <form action="/categories/{{$category->id}}" method="post">
           @csrf
           <div class="form-group">
             <input type="text" name="title" class="form-control" placeholder="Title" value="{{$category->title}}">
