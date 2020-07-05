@@ -11,9 +11,9 @@ use App\Http\Requests\Posts\UpdatePostRequest;
 
 class PostController extends Controller
 {
-
-    public function __construct(){
-      $this->middleware(['verifyCategories'])->only(['create', 'store']);
+    public function __construct()
+    {
+        $this->middleware(['verifyCategories'])->only(['create', 'store']);
     }
 
     /**
@@ -45,22 +45,23 @@ class PostController extends Controller
      */
     public function store(CreatePostRequest $request)
     {
-      $post = Post::create([
+        $post = Post::create([
         'title' => $request->title,
         'description' => $request->description,
         'content' => $request->content,
         'image' => $request->image->store('posts'),
         'published_at' => $request->published_at,
         'category_id' => $request->category_id,
+        'user_id' => auth()->user()->id,
       ]);
 
-      if ($request->tags) {
-        $post->tags()->attach($request->tags);
-      }
+        if ($request->tags) {
+            $post->tags()->attach($request->tags);
+        }
 
-      session()->flash('success', 'New post created successfully');
+        session()->flash('success', 'New post created successfully');
 
-      return redirect(route('posts.index'));
+        return redirect(route('posts.index'));
     }
 
     /**
@@ -96,13 +97,13 @@ class PostController extends Controller
     {
         $data = $request->only(['title', 'description', 'published_at', 'content', 'category_id']);
 
-        if($request->hasFile('image')) {
-          $post->deleteImage();
-          $data['image'] -> $request->image->store('posts');
+        if ($request->hasFile('image')) {
+            $post->deleteImage();
+            $data['image'] -> $request->image->store('posts');
         }
 
-        if($request->tags){
-          $post->tags()->sync($request->tags);
+        if ($request->tags) {
+            $post->tags()->sync($request->tags);
         }
 
         $post->update($data);
@@ -120,18 +121,17 @@ class PostController extends Controller
      */
     public function destroy($id)
     {
-      $post = Post::withTrashed()->where('id', $id)->firstOrFail();
-      if($post->trashed()){
-        $post->forceDelete();
-        $post->deleteImage();
-        session()->flash('success', 'Post deleted successfully');
-        return redirect(route('trashed-posts.index'));
-      }
-      else {
-        $post->delete();
-        session()->flash('success', 'Post trashed successfully');
-        return redirect(route('posts.index'));
-      }
+        $post = Post::withTrashed()->where('id', $id)->firstOrFail();
+        if ($post->trashed()) {
+            $post->forceDelete();
+            $post->deleteImage();
+            session()->flash('success', 'Post deleted successfully');
+            return redirect(route('trashed-posts.index'));
+        } else {
+            $post->delete();
+            session()->flash('success', 'Post trashed successfully');
+            return redirect(route('posts.index'));
+        }
     }
 
     /**
@@ -140,18 +140,18 @@ class PostController extends Controller
      * @param  \App\Post  $post
      * @return \Illuminate\Http\Response
      */
-     public function trash()
-     {
-         $trashed = Post::onlyTrashed()->get();
+    public function trash()
+    {
+        $trashed = Post::onlyTrashed()->get();
 
-         return view('posts.index')->withPosts($trashed);
-     }
+        return view('posts.index')->withPosts($trashed);
+    }
 
-     public function restore($id)
-     {
-         $post = Post::withTrashed()->where('id', $id)->firstOrFail();
-         $post->restore();
-         session()->flash('success', 'Post restored successfully');
-         return redirect()->back();
-     }
+    public function restore($id)
+    {
+        $post = Post::withTrashed()->where('id', $id)->firstOrFail();
+        $post->restore();
+        session()->flash('success', 'Post restored successfully');
+        return redirect()->back();
+    }
 }

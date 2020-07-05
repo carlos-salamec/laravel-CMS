@@ -19,6 +19,7 @@ class PostsSedeer extends Seeder
         'description' => 'Here I\'m describing my first post',
         'content' => 'This is the constent of my first post',
         'category_id' => 1,
+        'user_id' => 1,
         'image' => 'posts/1.jpg',
       ]);
         $post2 = Post::create([
@@ -26,6 +27,7 @@ class PostsSedeer extends Seeder
         'description' => 'Here I\'m describing my second post',
         'content' => 'This is the constent of my second post',
         'category_id' => 2,
+        'user_id' => 1,
         'image' => 'posts/2.jpg',
       ]);
         $post3 = Post::create([
@@ -33,6 +35,7 @@ class PostsSedeer extends Seeder
         'description' => 'Here I\'m describing my third post',
         'content' => 'This is the constent of my third post',
         'category_id' => 3,
+        'user_id' => 1,
         'image' => 'posts/3.jpg',
       ]);
         $post4 = Post::create([
@@ -40,6 +43,7 @@ class PostsSedeer extends Seeder
         'description' => 'Here I\'m describing my fourth post',
         'content' => 'This is the constent of my fourth post',
         'category_id' => 4,
+        'user_id' => 1,
         'image' => 'posts/4.jpg',
       ]);
 
