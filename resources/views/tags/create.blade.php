@@ -1,25 +1,25 @@
 @extends('layouts.app')
 @section('title')
-Add Category
+Add Tag
 @endsection
 @section('content')
 <div class="card card-default">
   <div class="card-header">
-    {{ isset($category) ? 'Edit Category' : 'Add Category' }}
+    {{ isset($tag) ? 'Edit Tag' : 'Add Tag' }}
   </div>
   <div class="card-body">
     @include('partials.errors')
-    <form action="{{ isset($category) ? route('categories.update', $category->id) : route('categories.store') }}" method="post">
+    <form action="{{ isset($tag) ? route('tags.update', $tag->id) : route('tags.store') }}" method="post">
       @csrf
-      @if(isset($category))
+      @if(isset($tag))
         @method('PUT')
       @endif
       <div class="form-group">
-        <input type="text" name="title" class="form-control" placeholder="Title" value="{{ isset($category) ? $category->title : '' }}">
+        <input type="text" name="title" class="form-control" placeholder="Title" value="{{ isset($tag) ? $tag->title : '' }}">
       </div>
       <div class="form-group text-center">
         <button type="submit" class="btn btn-success">
-          {{ isset($category) ? 'Update' : 'Add' }}
+          {{ isset($tag) ? 'Update' : 'Add' }}
         </button>
       </div>
     </form>
