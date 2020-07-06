@@ -34,6 +34,21 @@ services:
         aliases:
           - mysql-db
 
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    links:
+      - mysql-db
+    environment:
+      PMA_HOST: mysql-db
+      PMA_PORT: 3306
+    ports:
+      - '8080:80'
+    networks:
+      backend:
+        aliases:
+          - phpmyadmin
+
+
 networks:
   backend:
     name: backend-network
