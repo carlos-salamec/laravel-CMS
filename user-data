@@ -1,0 +1,64 @@
+# USER DATA
+
+#!/bin/bash
+sudo su
+yum update -y
+yum install httpd24 -y
+yum install php72 php72-mysqlnd php72-imap php72-pecl-memcache php72-pecl-apcu php72-gd php72-mbstring -y
+yum install mod24_ssl -y
+service httpd start
+chkconfig —add httpd
+chkconfig httpd on
+yum install git -y
+cd /var/www/html
+git clone https://github.com/cjsalame/laravel-CMS.git
+cd /var/www/html/laravel-CMS
+mv .env.example .env
+sudo chmod -R 777 /var/www/html/laravel-CMS/storage
+wget https://getcomposer.org/composer.phar
+
+# SSH in your instance and make the following configs:
+# Reconfigure our Apache server to point to the Laravel directory.
+# We will do this by copying the code below to the bottom of the
+# /etc/httpd/conf/httpd.conf file:
+
+sudo su
+nano /etc/httpd/conf/httpd.conf
+
+Alias / /var/www/html/laravel-CMS/public/
+<Directory "/var/www/html/laravel-CMS/public">
+        AllowOverride All
+        Order allow,deny
+        allow from all
+</Directory>
+
+# Edit the .htaccess file:
+
+nano /var/www/html/laravel-CMS/public/.htaccess
+
+# Then add RewriteBase / just below RewriteEngine On
+
+# Edit .env
+
+nano /var/www/html/laravel-CMS/.env
+
+DB_CONNECTION=mysql
+DB_HOST=<RDS ENDPOINT>
+DB_PORT=3306
+DB_DATABASE=laravelaws
+DB_USERNAME=laravelaws
+DB_PASSWORD=laravelaws
+
+BROADCAST_DRIVER=log
+CACHE_DRIVER=file
+QUEUE_CONNECTION=sync
+SESSION_DRIVER=database
+SESSION_LIFETIME=120
+
+# Let’s restart Apache to ensure immediate effect, and then return to the
+# laravel folder:
+
+service httpd restart
+cd /var/www/html/laravel-CMS
+php composer.phar install
+php artisan key:generate
