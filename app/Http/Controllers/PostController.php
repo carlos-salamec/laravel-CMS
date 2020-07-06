@@ -95,11 +95,11 @@ class PostController extends Controller
      */
     public function update(UpdatePostRequest $request, Post $post)
     {
-        $data = $request->only(['title', 'description', 'published_at', 'content', 'category_id', 'image']);
+        $data = $request->only(['title', 'description', 'published_at', 'content', 'category_id']);
 
         if ($request->hasFile('image')) {
             $post->deleteImage();
-            $data['image'] -> $request->image->store('posts');
+            $data['image'] = $request->image->store('posts');
         }
 
         if ($request->tags) {
@@ -123,8 +123,8 @@ class PostController extends Controller
     {
         $post = Post::withTrashed()->where('id', $id)->firstOrFail();
         if ($post->trashed()) {
-            $post->forceDelete();
             $post->deleteImage();
+            $post->forceDelete();
             session()->flash('success', 'Post deleted successfully');
             return redirect(route('trashed-posts.index'));
         } else {
