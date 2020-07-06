@@ -49,6 +49,8 @@ DB_DATABASE=laravelaws
 DB_USERNAME=laravelaws
 DB_PASSWORD=laravelaws
 
+FILESYSTEM_DRIVER=public
+
 BROADCAST_DRIVER=log
 CACHE_DRIVER=file
 QUEUE_CONNECTION=sync
@@ -58,7 +60,9 @@ SESSION_LIFETIME=120
 # Let’s restart Apache to ensure immediate effect, and then return to the
 # laravel folder:
 
-service httpd restart
 cd /var/www/html/laravel-CMS
 php composer.phar install
 php artisan key:generate
+rm public/storage
+php artisan storage:link
+service httpd restart
