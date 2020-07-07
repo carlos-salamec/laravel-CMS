@@ -12,8 +12,7 @@ class Post extends Model
     protected $fillable = ['title', 'description', 'content', 'image', 'published_at', 'category_id', 'user_id'];
 
     // Image url
-    public $appends = ['url'];
-    public function getUrlAttribute()
+    public function getImageUrlAttribute()
     {
         return Storage::disk('s3')->url($this->image);
     }
@@ -35,7 +34,7 @@ class Post extends Model
     */
     public function deleteImage()
     {
-        Storage::delete($this->image);
+        Storage::disk('s3')->delete($this->image);
     }
 
     public function tags()
