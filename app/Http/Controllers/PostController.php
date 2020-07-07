@@ -104,7 +104,7 @@ class PostController extends Controller
         $image = Storage::disk('s3')->put('images/posts', $request->image);
 
         if ($request->hasFile('image')) {
-            $post->deleteImage();
+            Storage::disk('s3')->delete($post->image);
             $data['image'] = $image;
         }
 
@@ -129,7 +129,7 @@ class PostController extends Controller
     {
         $post = Post::withTrashed()->where('id', $id)->firstOrFail();
         if ($post->trashed()) {
-            $post->deleteImage();
+            Storage::disk('s3')->delete($post->image);
             $post->forceDelete();
             session()->flash('success', 'Post deleted successfully');
             return redirect(route('trashed-posts.index'));

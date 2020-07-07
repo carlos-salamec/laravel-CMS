@@ -27,16 +27,6 @@ class Post extends Model
         return $this->belongsTo(User::class);
     }
 
-    /**
-    * Delete post image from storage
-    *
-    * @return void
-    */
-    public function deleteImage()
-    {
-        Storage::disk('s3')->delete($this->image);
-    }
-
     public function tags()
     {
         return $this->belongsToMany(Tag::class);
