@@ -11,6 +11,13 @@ class Post extends Model
     use SoftDeletes;
     protected $fillable = ['title', 'description', 'content', 'image', 'published_at', 'category_id', 'user_id'];
 
+    // Image url
+    public $appends = ['url'];
+    public function getUrlAttribute()
+    {
+        return Storage::disk('s3')->url($this->image);
+    }
+
     public function category()
     {
         return $this->belongsTo(Category::class);

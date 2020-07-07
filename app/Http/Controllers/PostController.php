@@ -9,6 +9,8 @@ use Illuminate\Http\Request;
 use App\Http\Requests\Posts\CreatePostRequest;
 use App\Http\Requests\Posts\UpdatePostRequest;
 
+use Illuminate\Support\Facades\Storage;
+
 class PostController extends Controller
 {
     public function __construct()
@@ -45,11 +47,13 @@ class PostController extends Controller
      */
     public function store(CreatePostRequest $request)
     {
+        $image = Storage::disk('s3')->put('images/originals', $request->image);
+
         $post = Post::create([
         'title' => $request->title,
         'description' => $request->description,
         'content' => $request->content,
-        'image' => $request->image->store('posts'),
+        'image' => $image,
         'published_at' => $request->published_at,
         'category_id' => $request->category_id,
         'user_id' => auth()->user()->id,
