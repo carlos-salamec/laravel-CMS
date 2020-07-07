@@ -9,6 +9,8 @@ use Illuminate\Http\Request;
 use App\Http\Requests\Posts\CreatePostRequest;
 use App\Http\Requests\Posts\UpdatePostRequest;
 
+use Illuminate\Support\Facades\Storage;
+
 class PostController extends Controller
 {
     public function __construct()
@@ -45,11 +47,13 @@ class PostController extends Controller
      */
     public function store(CreatePostRequest $request)
     {
+        $image = Storage::disk('s3')->put('images/posts', $request->image);
+
         $post = Post::create([
         'title' => $request->title,
         'description' => $request->description,
         'content' => $request->content,
-        'image' => $request->image->store('posts'),
+        'image' => $image,
         'published_at' => $request->published_at,
         'category_id' => $request->category_id,
         'user_id' => auth()->user()->id,
@@ -97,9 +101,11 @@ class PostController extends Controller
     {
         $data = $request->only(['title', 'description', 'published_at', 'content', 'category_id']);
 
+        $image = Storage::disk('s3')->put('images/posts', $request->image);
+
         if ($request->hasFile('image')) {
-            $post->deleteImage();
-            $data['image'] = $request->image->store('posts');
+            Storage::disk('s3')->delete($post->image);
+            $data['image'] = $image;
         }
 
         if ($request->tags) {
@@ -123,7 +129,7 @@ class PostController extends Controller
     {
         $post = Post::withTrashed()->where('id', $id)->firstOrFail();
         if ($post->trashed()) {
-            $post->deleteImage();
+            Storage::disk('s3')->delete($post->image);
             $post->forceDelete();
             session()->flash('success', 'Post deleted successfully');
             return redirect(route('trashed-posts.index'));
