@@ -5,7 +5,7 @@
 @endsection
 
 @section('header')
-<header class="header text-center text-white" style="background-image: url({{ asset("storage/{$post->image}") }});">
+<header class="header text-center text-white" style="background-image: url({{ $post->imageUrl }});">
     <div class="container">
 
         <div class="row">

@@ -20,7 +20,7 @@ class PostsSedeer extends Seeder
         'content' => 'This is the constent of my first post',
         'category_id' => 1,
         'user_id' => 1,
-        'image' => 'posts/1.jpg',
+        'image' => 'images/posts/P8hyTMM7SR0zW8ryHNiLyC2wE2NVtANki4u6wzOu.jpeg',
       ]);
         $post2 = Post::create([
         'title' => 'Second post',
@@ -28,7 +28,7 @@ class PostsSedeer extends Seeder
         'content' => 'This is the constent of my second post',
         'category_id' => 2,
         'user_id' => 1,
-        'image' => 'posts/2.jpg',
+        'image' => 'images/posts/CFBE18Cvwchw3UOaoX0iiZPHCJaQOykjy6X235BO.jpeg',
       ]);
         $post3 = Post::create([
         'title' => 'Third post',
@@ -36,7 +36,7 @@ class PostsSedeer extends Seeder
         'content' => 'This is the constent of my third post',
         'category_id' => 3,
         'user_id' => 1,
-        'image' => 'posts/3.jpg',
+        'image' => 'images/posts/S4wiotPtz4U4Y8KthGRSiopKtsgNjuBhnK2sduZH.jpeg',
       ]);
         $post4 = Post::create([
         'title' => 'Fourth post',
@@ -44,7 +44,7 @@ class PostsSedeer extends Seeder
         'content' => 'This is the constent of my fourth post',
         'category_id' => 4,
         'user_id' => 1,
-        'image' => 'posts/4.jpg',
+        'image' => 'images/posts/AP9fSAKxBLuivcLE3Au1FExUueCUuDhdxF1Nrdl9.jpeg',
       ]);
 
         $post1->tags()->attach([1, 2]);

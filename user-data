@@ -49,13 +49,16 @@ DB_DATABASE=laravelaws
 DB_USERNAME=laravelaws
 DB_PASSWORD=laravelaws
 
-FILESYSTEM_DRIVER=public
-
 BROADCAST_DRIVER=log
 CACHE_DRIVER=file
 QUEUE_CONNECTION=sync
 SESSION_DRIVER=database
 SESSION_LIFETIME=120
+
+AWS_ACCESS_KEY_ID=<AWS_ACCESS_KEY_ID>
+AWS_SECRET_ACCESS_KEY=<AWS_SECRET_ACCESS_KEY>
+AWS_DEFAULT_REGION=<AWS_DEFAULT_REGION>
+AWS_BUCKET=<AWS_BUCKET>
 
 # Let’s restart Apache to ensure immediate effect, and then return to the
 # laravel folder:
@@ -66,3 +69,24 @@ php artisan key:generate
 rm public/storage
 php artisan storage:link
 service httpd restart
+
+# To install phpMyAdmin, follow this tutorial: https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/install-LAMP.html#install-phpmyadmin-lamp-server-alami
+# But remember to create the phpmyadmin folder inside /var/www/html/laravel-CMS/public
+
+sudo su
+cd /var/www/html/laravel-CMS/public
+
+# phpMyAdmin by default allowed to access the localhost database only.
+# If you want to make it administer remote servers,
+# please edit /var/www/html/laravel-CMS/public/phpMyAdmin/config.inc.php
+# As Amazon RDS, you need to add the following lines after the block of localhost config.
+
+$i++;
+$cfg['Servers'][$i]['host'] = '<RDS ENDPOINT>';
+$cfg['Servers'][$i]['port'] = '3306';
+$cfg['Servers'][$i]['socket'] = '';
+$cfg['Servers'][$i]['connect_type'] = 'tcp';
+$cfg['Servers'][$i]['extension'] = 'mysqli';
+$cfg['Servers'][$i]['auth_type'] = 'cookie';
+
+# Now you can access phpMyAdmin and choose your host.
