@@ -1,4 +1,4 @@
-# USER DATA
+# User data:
 
 #!/bin/bash
 sudo su
@@ -60,26 +60,32 @@ AWS_SECRET_ACCESS_KEY=<AWS_SECRET_ACCESS_KEY>
 AWS_DEFAULT_REGION=<AWS_DEFAULT_REGION>
 AWS_BUCKET=<AWS_BUCKET>
 
-# Let’s restart Apache to ensure immediate effect, and then return to the
-# laravel folder:
+# Let’s install Composer and get the app ready to run:
 
 cd /var/www/html/laravel-CMS
 php composer.phar install
 php artisan key:generate
-rm public/storage
-php artisan storage:link
 service httpd restart
 
-# To install phpMyAdmin, follow this tutorial: https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/install-LAMP.html#install-phpmyadmin-lamp-server-alami
-# But remember to create the phpmyadmin folder inside /var/www/html/laravel-CMS/public
+#### PHPMYADMIN
 
+# Download the source package for the latest phpMyAdmin :
 sudo su
 cd /var/www/html/laravel-CMS/public
+wget https://www.phpmyadmin.net/downloads/phpMyAdmin-latest-all-languages.tar.gz
+# Create a phpMyAdmin folder and extract the package into it using the following command.
+mkdir phpMyAdmin && tar -xvzf phpMyAdmin-latest-all-languages.tar.gz -C phpMyAdmin --strip-components 1
+# Delete the phpMyAdmin-latest-all-languages.tar.gz tarball
+rm phpMyAdmin-latest-all-languages.tar.gz
 
 # phpMyAdmin by default allowed to access the localhost database only.
 # If you want to make it administer remote servers,
 # please edit /var/www/html/laravel-CMS/public/phpMyAdmin/config.inc.php
 # As Amazon RDS, you need to add the following lines after the block of localhost config.
+
+cd phpMyAdmin/
+mv config.sample.inc.php config.inc.php
+nano /var/www/html/laravel-CMS/public/phpMyAdmin/config.inc.php
 
 $i++;
 $cfg['Servers'][$i]['host'] = '<RDS ENDPOINT>';
@@ -89,4 +95,5 @@ $cfg['Servers'][$i]['connect_type'] = 'tcp';
 $cfg['Servers'][$i]['extension'] = 'mysqli';
 $cfg['Servers'][$i]['auth_type'] = 'cookie';
 
-# Now you can access phpMyAdmin and choose your host.
+# Now you can access phpMyAdmin and choose your host from
+# http://yourdomain.com/phpMyAdmin/

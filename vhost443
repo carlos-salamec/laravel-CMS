@@ -1,0 +1,44 @@
+<VirtualHost *:443>
+	# REQUIRED. Set this to the host/domian/subdomain that
+	# you want this VirtualHost record to handle.
+
+  ServerName php.charlytestingserver.net
+
+	# Optional. you can specify additional host names that
+	# serve up the same site. This can be top-level, domains,
+	# sub-domains, and can even use wildcard subdomains such
+	# as *.yurdomain.com - just seperate each host names
+	# with a single space.
+
+	#ServerAlias www.xyx.nl
+
+	# Required. Set this to the directory you want to use for
+	# this vhost site's files.
+
+  DocumentRoot /var/www/html/laravel-CMS/public
+
+  # Optional . Uncomment this and set it to your admin email
+  # address, if you have one. If there is a server error,
+  # this is the address that apache will show the users.
+
+  ServerAdmin cjsalame@uc.cl
+
+	# Optional. Uncomment this if you want to specify
+	# a different error log file than the default. you will
+	# need to create the error file first.
+
+	#ErrorLog /var/www/vhosts/logs/error_log
+
+	SSLCertificateFile /etc/letsencrypt/live/php.charlytestingserver.net/fullchain.pem
+	SSLCertificateKeyFile /etc/letsencrypt/live/php.charlytestingserver.net/privkey.pem
+	SSLCertificateChainFile /etc/letsencrypt/live/php.charlytestingserver.net/fullchain.pem
+
+
+	# Required. Let's make sure that .htaccess files work on
+	# this site. Don't forget to change the file path to
+	# match your DocumentRoot setting above
+
+  <Directory /var/www/html/laravel-CMS/public>
+	        AllowOverride All
+	</Directory>
+</VirtualHost>

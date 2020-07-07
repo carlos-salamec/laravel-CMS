@@ -1,0 +1,149 @@
+#!/bin/bash
+sudo yum update -y
+sudo yum install -y httpd24 php72 php72-mysqlnd php72-mbstring
+sudo yum install -y php72-mcrypt php72-zip php72-intl php72-gd
+sudo service httpd start
+sudo chkconfig httpd on
+sudo groupadd www
+sudo usermod -a -G www ec2-user
+sudo usermod -a -G www apache
+sudo chown -R ec2-user /var/www
+sudo chgrp -R www /var/www
+sudo chmod 2775 /var/www
+find /var/www -type d -exec sudo chmod 2775 {} +
+find /var/www -type f -exec sudo chmod 0664 {} +
+sudo chmod 0777 /var/lib/php/7.2/session
+sudo service httpd restart
+sudo yum install ruby
+sudo yum install wget
+
+#refer for your region https://docs.aws.amazon.com/codedeploy/latest/userguide/resource-kit.html
+wget https://aws-codedeploy-us-east-1.s3.amazonaws.com/latest/install
+
+chmod +x ./install
+sudo ./install auto
+sudo service codedeploy-agent start
+
+
+
+# https://www.cloudns.net/ , we can register free domain here
+
+
+#SSL installation
+
+sudo yum install mod24_ssl
+
+# Code to set-up vhost
+#sudo vi /etc/httpd/conf.d/vhost.conf
+#or
+sudo nano /etc/httpd/conf.d/vhost.conf
+
+
+<VirtualHost *:80>
+
+	# REQUIRED. Set this to the host/domian/subdomain that
+	# you want this VirtualHost record to handle.
+
+	ServerName aws.nacubopoc.cloudns.cl
+  Redirect permanent / https://aws.nacubopoc.cloudns.cl/
+
+	# Optional. you can specify additional host names that
+	# serve up the same site. This can be top-level, domains,
+	# sub-domains, and can even use wildcard subdomains such
+	# as *.yurdomain.com - just seperate each host names
+	# with a single space.
+
+	#ServerAlias www.xyx.nl
+
+	# Required. Set this to the directory you want to use for
+	# this vhost site's files.
+
+	DocumentRoot /var/www/html
+
+	# Optional . Uncomment this and set it to your admin email
+	# address, if you have one. If there is a server error,
+	# this is the address that apache will show the users.
+
+	ServerAdmin san@email.com
+
+	# Optional. Uncomment this if you want to specify
+	# a different error log file than the default. you will
+	# need to create the error file first.
+
+	#ErrorLog /var/www/vhosts/logs/error_log
+
+	#SSLCertificateFile /etc/pkt/tls/certs/xyz.crt
+	#SSLCertificateKeyFile /etc/pkt/tls/private/xyz.key
+	#SSLCertificateChainFile /etc/pkt/tls/certs/ComodoCA.crt
+
+	# Required. Let's make sure that .htaccess files work on
+	# this site. Don't forget to change the file path to
+	# match your DocumentRoot setting above
+
+	<Directory /var/www/html>
+		AllowOverride All
+	</Directory>
+</VirtualHost>
+
+sudo service httpd restart
+
+# commands to install Certificates
+cd ~
+wget https://dl.eff.org/certbot-auto
+chmod a+x certbot-auto
+
+#Requesting a certificate
+#sudo ~/certbot-auto --debug --nginx certonly -d example.com
+#sudo ~/certbot-auto --debug --apache certonly -d aws.nacubopoc.cloudns.cl
+sudo ~/certbot-auto --debug --apache certonly -d example.com
+
+sudo nano /etc/httpd/conf.d/vhost.conf
+
+#append to the vhost file
+<VirtualHost *:443>
+
+	# REQUIRED. Set this to the host/domian/subdomain that
+	# you want this VirtualHost record to handle.
+
+	ServerName aws.nacubopoc.cloudns.cl
+
+	# Optional. you can specify additional host names that
+	# serve up the same site. This can be top-level, domains,
+	# sub-domains, and can even use wildcard subdomains such
+	# as *.yurdomain.com - just seperate each host names
+	# with a single space.
+
+	#ServerAlias www.xyx.nl
+
+	# Required. Set this to the directory you want to use for
+	# this vhost site's files.
+
+	DocumentRoot /var/www/html
+
+	# Optional. Uncomment this if you want to specify
+	# a different error log file than the default. you will
+	# need to create the error file first.
+
+	#ErrorLog /var/www/vhosts/logs/error_log
+
+	SSLCertificateFile /etc/letsencrypt/live/aws.nacubopoc.cloudns.cl/fullchain.pem
+	SSLCertificateKeyFile /etc/letsencrypt/live/aws.nacubopoc.cloudns.cl/privkey.pem
+	SSLCertificateChainFile /etc/letsencrypt/live/aws.nacubopoc.cloudns.cl/fullchain.pem
+
+
+	# Required. Let's make sure that .htaccess files work on
+	# this site. Don't forget to change the file path to
+	# match your DocumentRoot setting above
+
+	<Directory /var/www/html>
+		AllowOverride All
+	</Directory>
+</VirtualHost>
+
+sudo service httpd restart
+
+
+#to set cron for cert auto renewal
+sudo crontab -e
+#inside vi
+30 2 * * Sun /home/ec2-user/certbot-auto --debug renew

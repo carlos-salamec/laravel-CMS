@@ -6,15 +6,10 @@ Start developing a fresh Laravel application with `docker` using `docker-compose
 The images used in this repo is `php:7.2-apache` and `mysql:5.7`. The goal is to make setting up the development as simple as possible.
 
 ## Up and running
-Clone the repo:
-```
-$ git clone https://github.com/laravel/laravel.git
-$ cd laravel
-```
 
 Copy `.env.example` to `.env`
 ```
-$ cp .env.example .env 
+$ cp .env.example .env
 ```
 
 Build the images and start the services:
